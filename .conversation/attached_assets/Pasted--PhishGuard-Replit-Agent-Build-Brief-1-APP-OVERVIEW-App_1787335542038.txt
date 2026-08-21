@@ -1,0 +1,317 @@
+# PhishGuard — Replit Agent Build Brief
+
+## 1. APP OVERVIEW
+
+**App Name:** PhishGuard — Phishing URL Detection & Threat Analyzer
+
+**One-line description:** A real-time web app that analyzes any URL using rule-based heuristics and machine learning to detect phishing attempts, showing a plain-English explanation of *why* a link is dangerous.
+
+**Core problem it solves:** Most phishing detectors are simple blacklists that miss new/unseen malicious URLs and give no explanation. PhishGuard extracts structural and lexical features from a URL, runs both rule-based checks and an ML classifier, and produces an explainable verdict (Safe / Phishing) with a confidence score and the specific reasons behind it — helping users make informed decisions instead of blindly trusting a red/green label.
+
+**Target Users:**
+- **General Users** — paste a suspicious link before clicking it, get an instant safe/unsafe verdict.
+- **Security Analysts / Students** — study extracted features and understand detection logic for learning/research.
+- **Admins** — monitor scan logs, system-wide stats, and model performance over time.
+
+---
+
+## 2. FULL FEATURE LIST
+
+### Must-Have (Core / Judged Heavily)
+1. User authentication — signup, login, logout, session handling
+2. OTP-based password reset (simulated OTP is fine — see Data & APIs section)
+3. URL Scanner page — input a URL, click Analyze, get instant result
+4. Feature extraction engine (URL length, IP-in-URL, subdomain count, HTTPS check, suspicious keywords, special characters, `@` symbol, hyphens, URL shortener detection, digit ratio, path depth)
+5. Rule-based detection engine with clearly listed triggered rules
+6. ML classifier (trained on a phishing URL dataset) returning Safe/Phishing + probability/confidence score
+7. Explainable Result panel: verdict + confidence % + human-readable list of reasons (which rules fired + top contributing features)
+8. Scan Logs page — full history table (URL, prediction, risk score, timestamp, user) with search
+9. Dynamic filters on Dashboard/Logs — by result, by date range, by risk score range
+10. Dashboard KPIs — Total URLs Scanned, Malicious Detected, Safe URLs, Model Accuracy, Recent Scans widget
+11. Model Info page — features used, dataset summary (size, source, class balance), accuracy/precision/recall/F1
+12. Settings/Profile page — update name, change password, view account info
+
+### High-Impact Bonus Features (Prioritize for Judges)
+13. **Bulk URL scan via CSV upload** — upload a CSV of URLs, get a results table + downloadable report
+14. **Feature importance visualization** — bar chart showing which features most influenced the ML model (e.g., from a Random Forest's `feature_importances_`)
+15. **Rule-based vs ML prediction comparison** — side-by-side card showing if both methods agree or conflict
+16. **Export scan report** — download a single scan or full log history as PDF/CSV
+17. Risk score gauge/meter (visual 0–100 dial) on scan result
+18. Animated "scanning" loader when analyzing a URL (progress steps: Fetching → Extracting Features → Running Rules → ML Classification → Done)
+19. Admin-only view of all users' scans (if role = admin)
+20. Dark/light mode toggle
+
+### Nice-to-Have (If Time Permits)
+21. Browser extension mockup page (static UI showing how it would look as a Chrome extension popup)
+22. Domain age lookup via free WHOIS API (optional, gracefully falls back to "N/A" if API fails/rate-limited)
+23. QR-code scan simulation (scan a QR → auto-fills URL scanner)
+24. Shareable public result link (read-only view of a scan result)
+
+---
+
+## 3. TECH STACK
+
+Keep this simple, fast to build, and fully within Replit's capabilities:
+
+**Frontend:**
+- React (Vite) + TypeScript
+- Tailwind CSS for styling
+- shadcn/ui component library (cards, tables, dialogs, badges, tabs)
+- Recharts for charts (feature importance, KPI trends, risk distribution)
+- Lucide-react for icons
+- React Router for navigation
+- React Query (TanStack Query) for data fetching/caching
+
+**Backend:**
+- Node.js + Express (TypeScript)
+- REST API architecture
+
+**Database:**
+- PostgreSQL (Replit's built-in Postgres or Neon) with Drizzle ORM
+- Tables: `users`, `scans`, `otp_codes`
+
+**ML / Feature Extraction Layer:**
+- Python microservice using **Flask** (or FastAPI) running alongside the Node backend, exposed as an internal API (e.g., `http://localhost:5001/predict`)
+- **scikit-learn** — train a `RandomForestClassifier` (or `XGBoost` if available) on a phishing URL feature dataset
+- **pandas** / **numpy** for data handling
+- Feature extraction done in Python using `urllib.parse`, `re`, and `tldextract`
+- Model persisted with `joblib` (`model.pkl`) so it doesn't retrain on every request — train once at setup, load at runtime
+- Node backend calls the Python service via HTTP for predictions; Python service also serves `/feature-importance` and `/model-info` endpoints
+
+> If Replit Agent finds cross-service orchestration too complex, fallback: implement the ML model as a pure-JS heuristic-weighted scoring model (still call it "ML-based classification" with a logistic-regression-style weighted formula) — but ATTEMPT the Python scikit-learn microservice first since it's more impressive to judges.
+
+**Auth:**
+- JWT-based session tokens, stored in httpOnly cookies
+- bcrypt for password hashing
+
+**Other:**
+- `multer` for CSV file upload handling
+- `csv-parse` / `papaparse` for parsing bulk URL CSVs
+- `pdfkit` or `jspdf` for report export
+
+---
+
+## 4. PAGES & USER FLOW
+
+1. **Landing Page** (`/`)
+   - Hero section explaining PhishGuard, "Scan a URL" CTA, feature highlights, "How it works" 3-step visual
+   - Links to Login / Signup
+
+2. **Signup Page** (`/signup`)
+   - Name, email, password fields → creates account → redirects to Login
+
+3. **Login Page** (`/login`)
+   - Email + password → on success, redirect to `/dashboard`
+   - "Forgot password?" link → Forgot Password flow
+
+4. **Forgot Password / OTP Reset** (`/forgot-password` → `/verify-otp` → `/reset-password`)
+   - Enter email → system generates 6-digit OTP (displayed on-screen/toast for demo purposes, simulating email delivery, and logged to console) → user enters OTP → set new password → redirect to Login
+
+5. **Dashboard** (`/dashboard`) — default landing page after login
+   - KPI cards: Total Scanned, Malicious Detected, Safe URLs, Model Accuracy
+   - Recent Scans table (last 5–10)
+   - Risk distribution chart (pie/donut: Safe vs Phishing)
+   - Filters: result type, date range, risk score range — applies to Recent Scans table
+
+6. **URL Scanner** (`/scanner`)
+   - Large URL input field + "Analyze" button
+   - On submit: animated scanning steps, then result card:
+     - Verdict badge (✅ Safe / ❌ Phishing) + confidence %
+     - Risk score gauge (0–100)
+     - "Reasons" bullet list (triggered rules + top ML features)
+     - Rule-based vs ML comparison card
+   - "Scan Another URL" / "Save to Logs" (auto-saved by default)
+   - "Bulk Scan (CSV)" tab/toggle within same page
+
+7. **Feature Analyzer** (`/features/:scanId` or accessible from scan result "View Full Features")
+   - Full extracted feature table for a given URL (feature name, value, contribution to verdict)
+   - Highlights which features were "red flags"
+
+8. **Scan Logs** (`/logs`)
+   - Full table: URL, Result, Risk Score, Timestamp, User (admin sees all users; regular users see only their own)
+   - Search bar + filters (result, date range, risk score range)
+   - Click a row → opens Feature Analyzer detail view for that scan
+   - "Export" button → CSV/PDF download
+
+9. **Model Info** (`/model-info`)
+   - Features used (list with descriptions)
+   - Dataset summary (total samples, phishing vs legitimate split, source)
+   - Accuracy, Precision, Recall, F1-score displayed as cards
+   - Feature importance bar chart
+
+10. **Settings / Profile** (`/settings`)
+    - Update name/email, change password, theme toggle, logout button
+
+11. **Browser Extension Mock** (`/extension-preview`) — optional bonus page
+    - Static mockup of a browser extension popup showing a live scan result UI
+
+**Navigation:** Persistent left sidebar (Dashboard, URL Scanner, Feature Analyzer, Scan Logs, Model Info, Settings) + top navbar with user avatar/logout, visible on all authenticated pages. Landing/Login/Signup pages have no sidebar.
+
+---
+
+## 5. UI & DESIGN INSTRUCTIONS
+
+**Overall style:** Modern cybersecurity SaaS aesthetic — dark-first design (with light mode toggle), clean data-dense dashboard, feels like a professional security tool (think: a blend of a SOC dashboard and a fintech risk-scoring app).
+
+**Color Scheme:**
+- Background: deep navy/charcoal (`#0B0F19` dark mode / `#F8FAFC` light mode)
+- Primary accent: electric blue (`#3B82F6`) for primary actions/links
+- Danger/Phishing: red (`#EF4444`) with soft red glow/badge background
+- Safe: emerald green (`#10B981`)
+- Warning/medium-risk: amber (`#F59E0B`)
+- Neutral cards: slightly lighter surface than background (`#111827` on dark, white on light) with subtle border (`#1F2937`)
+
+**Typography:**
+- Headings: "Inter" or "Space Grotesk" (bold, tight tracking)
+- Body: "Inter"
+- Monospace font (e.g., "JetBrains Mono") for displaying raw URLs and feature values — reinforces the "technical/security tool" feel
+
+**Layout:**
+- Sidebar navigation (collapsible), fixed top navbar with search + profile
+- Card-based grid layout for KPIs and content sections
+- Generous spacing, rounded corners (`rounded-xl`), soft shadows, subtle borders instead of heavy drop shadows
+
+**Key UI Components/Animations:**
+- Animated multi-step "scanning" loader on URL Scanner (checkmarks appearing sequentially: Fetching URL → Extracting Features → Rule Check → ML Prediction)
+- Circular risk-score gauge/meter with color transitioning green→amber→red based on score
+- Verdict badge with a subtle pulse/glow animation on reveal
+- Smooth transitions/fade-ins on page load and card reveals (Framer Motion recommended)
+- Data tables with sortable columns, hover row highlight, and colored result chips (Safe = green chip, Phishing = red chip)
+- Toast notifications for actions (scan saved, OTP sent, export complete)
+- Empty states with friendly icons/illustrations for Scan Logs when no data exists yet
+
+---
+
+## 6. DATA & APIS
+
+### Data Models / Schema (PostgreSQL via Drizzle ORM)
+
+**`users`**
+| Field | Type | Notes |
+|---|---|---|
+| id | UUID (PK) | |
+| name | text | |
+| email | text (unique) | |
+| password_hash | text | |
+| role | enum('user','admin') | default 'user' |
+| created_at | timestamp | |
+
+**`otp_codes`**
+| Field | Type | Notes |
+|---|---|---|
+| id | UUID (PK) | |
+| user_id | UUID (FK → users) | |
+| code | text | 6-digit OTP |
+| expires_at | timestamp | e.g., 10 min validity |
+| used | boolean | default false |
+
+**`scans`**
+| Field | Type | Notes |
+|---|---|---|
+| id | UUID (PK) | |
+| user_id | UUID (FK → users) | |
+| url | text | |
+| verdict | enum('safe','phishing') | |
+| confidence | float | ML confidence 0–100 |
+| risk_score | int | 0–100 combined score |
+| rule_flags | jsonb | array of triggered rule names |
+| features | jsonb | extracted feature key-value pairs |
+| ml_prediction | text | 'safe'/'phishing' |
+| rule_prediction | text | 'safe'/'phishing' |
+| created_at | timestamp | |
+
+**`model_metadata`** (singleton row, updated at training time)
+| Field | Type | Notes |
+|---|---|---|
+| id | UUID (PK) | |
+| accuracy | float | |
+| precision | float | |
+| recall | float | |
+| f1_score | float | |
+| dataset_size | int | |
+| phishing_count | int | |
+| legitimate_count | int | |
+| trained_at | timestamp | |
+
+### APIs to Integrate
+
+1. **Internal ML Service** — `POST http://localhost:5001/predict`
+   - Body: `{ "url": "http://192.168.0.1/login/verify-account" }`
+   - Response: `{ "verdict": "phishing", "confidence": 92.4, "features": {...}, "rule_flags": [...], "ml_prediction": "phishing", "rule_prediction": "phishing" }`
+
+2. **Internal ML Service** — `GET http://localhost:5001/model-info`
+   - Response: accuracy metrics, dataset summary, feature importance list
+
+3. **(Optional) WHOIS Domain Age API** — free tier, e.g., `https://api.whoapi.com` or `https://www.whoisxmlapi.com/whois-api.php` — used to fetch domain creation date for the "Domain Age" feature. **This must be optional/mockable**: if no API key is configured, fall back to a mock value (`"domain_age_days": null` → display "N/A / Not Available") so the app fully works without external API keys.
+
+### Dummy/Mock Data to Pre-populate
+
+- **Training dataset:** Since no dataset upload is guaranteed, Replit Agent should generate a synthetic-but-realistic labeled dataset (500–1000 rows) of URLs with engineered features (length, has_ip, num_dots, has_https, suspicious_keywords, special_char_count, etc.) and a `label` column (phishing/legitimate), using a mix of:
+  - Known-pattern phishing URL templates (IP-based, keyword-stuffed, excessive subdomains, no HTTPS, shorteners)
+  - Known-pattern legitimate URL templates (real domain structures, HTTPS, short paths)
+  - This CSV should be saved as `data/phishing_dataset.csv` and used to train the model at app setup.
+- **Seed users:** one admin (`admin@phishguard.com` / `Admin@123`) and one demo user (`demo@phishguard.com` / `Demo@123`)
+- **Seed scan logs:** 15–20 pre-populated sample scans (mix of safe/phishing, varied timestamps over the past 2 weeks) so the Dashboard and Logs pages aren't empty on first load.
+
+---
+
+## 7. STEP-BY-STEP BUILD INSTRUCTIONS FOR REPLIT AGENT
+
+Follow these steps sequentially. Do not skip steps. Build incrementally and verify each layer works before moving to the next.
+
+**Step 1 — Project Scaffolding**
+- Initialize a full-stack project: React (Vite + TypeScript) frontend in `/client`, Node.js + Express (TypeScript) backend in `/server`, Python Flask microservice in `/ml-service`.
+- Set up Tailwind CSS + shadcn/ui in the client. Configure dark mode via class strategy.
+- Set up PostgreSQL database (Replit built-in or Neon) and Drizzle ORM in `/server`. Define the schema for `users`, `otp_codes`, `scans`, `model_metadata` as specified above. Run migrations.
+
+**Step 2 — Synthetic Dataset + ML Model Training**
+- In `/ml-service`, write a script `generate_dataset.py` that creates `data/phishing_dataset.csv` with 500–1000 labeled rows using engineered features described in the schema (mix of phishing-pattern and legitimate-pattern URLs).
+- Write `feature_extraction.py` with a function `extract_features(url: str) -> dict` that computes: url_length, has_ip, num_dots, num_subdomains, has_https, has_at_symbol, has_hyphen, num_special_chars, suspicious_keyword_count (check against list: login, verify, bank, update, secure, account, confirm, signin), digit_ratio, path_depth, is_shortened (bit.ly, tinyurl, etc.), domain_age_days (optional, defaults to null).
+- Write `train_model.py` that loads the dataset, trains a `RandomForestClassifier` from scikit-learn, evaluates on a held-out test split (accuracy/precision/recall/F1), saves the model to `model.pkl` via joblib, and writes metrics + dataset summary to a `model_metadata.json` file.
+- Run the training script once during setup so `model.pkl` and `model_metadata.json` exist before the app starts.
+
+**Step 3 — ML Microservice API**
+- Build a Flask app (`app.py`) in `/ml-service` exposing:
+  - `POST /predict` — accepts `{url}`, runs `extract_features`, applies rule-based checks (IP in URL, too many subdomains (>3), no HTTPS, suspicious keywords present, `@` symbol present), loads `model.pkl` to get ML prediction + probability, and returns a combined JSON response with verdict, confidence, risk_score (0–100 weighted blend), rule_flags, ml_prediction, rule_prediction, and the full features dict.
+  - `GET /model-info` — returns metrics + feature importances from the trained RandomForest (`model.feature_importances_` mapped to feature names) + dataset summary, read from `model_metadata.json`.
+- Run this service on port 5001.
+
+**Step 4 — Backend API (Express)**
+- Implement auth routes: `POST /api/auth/signup`, `POST /api/auth/login` (JWT in httpOnly cookie), `POST /api/auth/forgot-password` (generates OTP, stores in `otp_codes`, returns it in response for demo purposes), `POST /api/auth/verify-otp`, `POST /api/auth/reset-password`, `POST /api/auth/logout`.
+- Implement `POST /api/scans` — accepts a URL, calls the ML microservice `/predict`, stores the result in the `scans` table linked to the authenticated user, returns the full result.
+- Implement `POST /api/scans/bulk` — accepts a CSV upload (multer), parses rows, calls `/predict` for each URL, stores all results, returns a summary + downloadable results.
+- Implement `GET /api/scans` — returns paginated scan history for the logged-in user (or all users if admin), with query params for filtering by result/date range/risk score range.
+- Implement `GET /api/scans/:id` — full detail for one scan (for Feature Analyzer page).
+- Implement `GET /api/scans/export` — generates CSV/PDF of scan logs.
+- Implement `GET /api/dashboard/stats` — returns KPI aggregates (total scanned, malicious count, safe count, model accuracy pulled from `/model-info`).
+- Implement `GET /api/model-info` — proxies the ML microservice's `/model-info`.
+- Seed the database with the admin/demo users and 15–20 sample scans as described in Data & APIs.
+
+**Step 5 — Frontend: Auth Flow**
+- Build Landing, Signup, Login, Forgot Password, Verify OTP, Reset Password pages per the routes listed in Section 4. Wire up to backend auth APIs. Store JWT/session state in a React context (`AuthProvider`).
+
+**Step 6 — Frontend: Dashboard**
+- Build the Dashboard page with KPI cards (fetch from `/api/dashboard/stats`), Recent Scans table, risk distribution donut chart (Recharts), and dynamic filters wired to `/api/scans`.
+
+**Step 7 — Frontend: URL Scanner**
+- Build the Scanner page: URL input, Analyze button, animated multi-step scanning loader, then render the result card (verdict badge, confidence, risk gauge, reasons list, rule-vs-ML comparison card). On success, POST to `/api/scans` and display the response. Add a "Bulk Scan (CSV)" tab that uploads to `/api/scans/bulk` and shows a results table.
+
+**Step 8 — Frontend: Feature Analyzer, Scan Logs, Model Info**
+- Build Feature Analyzer detail view (full feature table + highlighted red flags), reachable from scan results and from clicking a row in Scan Logs.
+- Build Scan Logs page: table with search, filters, pagination, click-through to Feature Analyzer, and Export button.
+- Build Model Info page: metric cards (accuracy/precision/recall/F1), dataset summary, and feature importance bar chart (Recharts) fetched from `/api/model-info`.
+
+**Step 9 — Frontend: Settings & Polish**
+- Build Settings/Profile page (update profile, change password, theme toggle, logout).
+- Add the persistent sidebar + top navbar layout wrapping all authenticated pages.
+- Apply the full color scheme, typography, and animations specified in Section 5 across all pages consistently. Add Framer Motion page transitions.
+- Add toast notifications (using shadcn/ui `sonner` or `toast`) for key actions.
+
+**Step 10 — Optional Bonus Pages**
+- If time remains, build the Browser Extension Mock page (`/extension-preview`) as a static styled mockup.
+- Add domain-age lookup integration with graceful fallback if no API key is set.
+
+**Step 11 — Final QA Pass**
+- Test the full flow end-to-end: signup → login → scan a known-phishing-style URL (e.g., `http://192.168.0.1/login/verify-account`) and confirm it's flagged Phishing with reasons listed → scan a clean URL (e.g., `https://www.wikipedia.org`) and confirm it's flagged Safe → check Dashboard KPIs update → check Scan Logs and filters work → check Model Info page displays real trained metrics → test OTP password reset flow → test CSV bulk upload → test export.
+- Ensure the app works fully without any external API keys configured (WHOIS domain age must gracefully degrade to "N/A").
+- Confirm dark mode is the default and looks polished; verify light mode toggle works.

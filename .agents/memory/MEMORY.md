@@ -1,0 +1,1 @@
+- [API contract compatibility](api-contract-compatibility.md) — keep OpenAPI-generated Zod schemas compatible with the workspace's installed Zod version.

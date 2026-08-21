@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --font-sans: var(--app-font-sans);
+  --font-mono: var(--app-font-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 42 36% 96%;
+  --foreground: 204 38% 16%;
+  --border: 210 24% 86%;
+  --input: 210 24% 84%;
+  --ring: 171 54% 36%;
+  --card: 42 40% 99%;
+  --card-foreground: 204 38% 16%;
+  --primary: 171 54% 31%;
+  --primary-foreground: 42 36% 97%;
+  --secondary: 195 31% 92%;
+  --secondary-foreground: 204 38% 19%;
+  --muted: 205 22% 91%;
+  --muted-foreground: 205 16% 45%;
+  --accent: 37 80% 53%;
+  --accent-foreground: 204 38% 16%;
+  --destructive: 4 63% 50%;
+  --destructive-foreground: 42 36% 98%;
+  --sidebar: 204 42% 15%;
+  --sidebar-foreground: 202 25% 87%;
+  --sidebar-border: 204 29% 25%;
+  --sidebar-primary: 165 62% 52%;
+  --sidebar-primary-foreground: 204 42% 12%;
+  --sidebar-accent: 204 34% 22%;
+  --sidebar-accent-foreground: 202 25% 94%;
+  --app-font-sans: 'Plus Jakarta Sans', sans-serif;
+  --app-font-mono: 'DM Mono', monospace;
+  --radius: 0.9rem;
+  --shadow-card: 0 14px 42px rgba(29, 54, 65, .07);
+}
+
+.dark {
+  --background: 204 42% 10%;
+  --foreground: 202 25% 91%;
+  --border: 204 29% 25%;
+  --input: 204 29% 27%;
+  --ring: 165 62% 52%;
+  --card: 204 37% 14%;
+  --card-foreground: 202 25% 91%;
+  --primary: 165 62% 52%;
+  --primary-foreground: 204 42% 10%;
+  --secondary: 204 34% 22%;
+  --secondary-foreground: 202 25% 91%;
+  --muted: 204 29% 21%;
+  --muted-foreground: 202 17% 65%;
+  --accent: 37 80% 53%;
+  --accent-foreground: 204 42% 10%;
+  --destructive: 4 63% 57%;
+  --destructive-foreground: 204 42% 10%;
+  --sidebar: 204 45% 8%;
+  --sidebar-foreground: 202 25% 87%;
+  --sidebar-border: 204 29% 19%;
+  --sidebar-primary: 165 62% 52%;
+  --sidebar-primary-foreground: 204 45% 8%;
+  --sidebar-accent: 204 34% 16%;
+  --sidebar-accent-foreground: 202 25% 94%;
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body { @apply font-sans antialiased bg-background text-foreground; }
+  button, a, input, select { -webkit-tap-highlight-color: transparent; }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scanline { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes pulse-ring { 0%, 100% { opacity: .42; transform: scale(.96); } 50% { opacity: .1; transform: scale(1.03); } }
+.animate-rise { animation: rise .55s cubic-bezier(.2,.8,.2,1) both; }
+.stagger-1 { animation-delay: .06s; } .stagger-2 { animation-delay: .12s; } .stagger-3 { animation-delay: .18s; } .stagger-4 { animation-delay: .24s; }
+.scan-beam { position: relative; overflow: hidden; }
+.scan-beam::after { content: ''; position: absolute; inset: 0 auto 0 -50%; width: 45%; background: linear-gradient(90deg, transparent, rgba(72, 199, 177, .18), transparent); animation: scanline 1.15s ease-in-out infinite; }
+.pulse-ring { animation: pulse-ring 2.4s ease-in-out infinite; }
+.mono { font-family: var(--app-font-mono); }
+.grid-texture { background-image: linear-gradient(rgba(68, 104, 112, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(68, 104, 112, .06) 1px, transparent 1px); background-size: 28px 28px; }
+.focus-ring:focus-visible { outline: 3px solid hsl(var(--accent) / .45); outline-offset: 3px; }

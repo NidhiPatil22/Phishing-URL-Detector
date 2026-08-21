@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "PhishGuard"
+description = "A real-time phishing URL detection and threat analysis app that explains risk in plain English for everyday users and security learners."
+version = "1.0.0"
+id = "artifacts/phishguard"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23450
+
+[services.development]
+run = "pnpm --filter @workspace/phishguard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/phishguard", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/phishguard/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23450"
+BASE_PATH = "/"

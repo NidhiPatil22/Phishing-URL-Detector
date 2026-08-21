@@ -1,6 +1,6 @@
-# [Project name]
+# PhishGuard
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+PhishGuard analyzes URLs and explains phishing risk in plain language before users click.
 
 ## Run & Operate
 
@@ -22,15 +22,23 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/phishguard/src/App.tsx` — user-facing routes, scanner, dashboard, history, model notes, auth and settings
+- `artifacts/phishguard/src/index.css` — PhishGuard theme tokens and responsive visual system
+- `artifacts/api-server/src/routes/phishguard.ts` — URL feature extraction, heuristic verdicts, demo auth and scan APIs
+- `lib/api-spec/openapi.yaml` — source of truth for the generated API client and validation schemas
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first release keeps the detection engine local to the API server so the complete demo works without external API keys or a second runtime.
+- URL analysis exposes both rule flags and extracted features, keeping the verdict explainable instead of presenting only a score.
+- The frontend consumes the generated React Query client from the OpenAPI contract rather than hand-written request types.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Public landing page with a quick-scan entry point
+- Demo-friendly sign up, sign in, logout and password recovery screens
+- URL scanner with risk score, confidence, rule-vs-model context, and feature breakdown
+- Dashboard KPIs, recent scans, scan history search/filtering, model metrics, browser-helper preview, and appearance settings
 
 ## User preferences
 
@@ -38,7 +46,8 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Regenerate API hooks with `pnpm --filter @workspace/api-spec run codegen` after changing `lib/api-spec/openapi.yaml`.
+- The frontend and API are separate managed services; restart both workflows after service or contract changes.
 
 ## Pointers
 
