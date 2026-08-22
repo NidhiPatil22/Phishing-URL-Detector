@@ -199,7 +199,7 @@ components:
         url: {type: string, minLength: 4}
     Scan:
       type: object
-      required: [id, url, verdict, confidence, riskScore, ruleFlags, features, mlPrediction, rulePrediction, createdAt, userName]
+      required: [id, url, verdict, confidence, riskScore, ruleFlags, features, mlPrediction, rulePrediction, createdAt, userName, brandImpersonation, similarityScore, urlIntelligence]
       properties:
         id: {type: string}
         url: {type: string}
@@ -212,6 +212,40 @@ components:
         rulePrediction: {type: string, enum: [safe, phishing]}
         createdAt: {type: string}
         userName: {type: string}
+        brandImpersonation: {type: boolean}
+        impersonatedBrand: {type: string, nullable: true}
+        legitimateDomain: {type: string, nullable: true}
+        similarityScore: {type: number}
+        impersonationReason: {type: string, nullable: true}
+        urlIntelligence: {$ref: "#/components/schemas/UrlIntelligence"}
+    UrlIntelligence:
+      type: object
+      required:
+        - protocol
+        - hostname
+        - registrableDomain
+        - subdomainCount
+        - port
+        - path
+        - queryParameterCount
+        - queryParameterNames
+        - hasFragment
+        - urlLength
+        - httpsEnabled
+      properties:
+        protocol: {type: string}
+        hostname: {type: string}
+        registrableDomain: {type: string}
+        subdomainCount: {type: number}
+        port: {type: number}
+        path: {type: string}
+        queryParameterCount: {type: number}
+        queryParameterNames: {type: array, items: {type: string}}
+        hasFragment: {type: boolean}
+        urlLength: {type: number}
+        ipAddress: {type: string, nullable: true}
+        ipVersion: {type: string, nullable: true}
+        httpsEnabled: {type: boolean}
     DashboardStats:
       type: object
       required: [totalScanned, maliciousDetected, safeUrls, modelAccuracy, phishingPercent, safePercent, recentScans]
