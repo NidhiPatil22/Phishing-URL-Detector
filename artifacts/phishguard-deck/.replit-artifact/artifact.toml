@@ -1,0 +1,28 @@
+kind = "slides"
+previewPath = "/phishguard-deck/"
+title = "PhishGuard Project Deck"
+description = "A technical security presentation explaining PhishGuard's phishing URL detection product, explainable analysis flow, architecture, and roadmap."
+version = "1.0.0"
+id = "artifacts/phishguard-deck"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/phishguard-deck/" ]
+localPort = 22220
+
+[services.development]
+run = "pnpm --filter @workspace/phishguard-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/phishguard-deck", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/phishguard-deck/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22220"
+BASE_PATH = "/phishguard-deck/"

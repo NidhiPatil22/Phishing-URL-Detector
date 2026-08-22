@@ -1,0 +1,90 @@
+[
+  {
+    "id": "phishguard-1",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide1.tsx",
+    "title": "PhishGuard",
+    "description": "A technical security project deck.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-2",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide2.tsx",
+    "title": "The problem: blacklists are not enough",
+    "description": "Why phishing detection needs explanation.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-3",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide3.tsx",
+    "title": "What PhishGuard does",
+    "description": "The product promise and scan output.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-4",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide4.tsx",
+    "title": "Inside a scan",
+    "description": "URL feature extraction signals.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-5",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide5.tsx",
+    "title": "Explainability is the product",
+    "description": "How rules, ML, and evidence work together.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-6",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide6.tsx",
+    "title": "System architecture",
+    "description": "Frontend, API, and analysis engine.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-7",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide7.tsx",
+    "title": "The product surface",
+    "description": "The major user-facing surfaces.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-8",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide8.tsx",
+    "title": "A working security workflow",
+    "description": "The scan journey from paste to decision.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-9",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide9.tsx",
+    "title": "What makes the project strong",
+    "description": "Differentiation and design intent.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-10",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10.tsx",
+    "title": "Next steps",
+    "description": "The path to production-grade detection.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "phishguard-11",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide11.tsx",
+    "title": "PhishGuard",
+    "description": "Closing statement.",
+    "speakerNotes": ""
+  }
+]
