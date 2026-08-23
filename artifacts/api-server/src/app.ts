@@ -32,6 +32,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.get("/", (_req, res) => {
+  res.json({
+    status: "operational",
+    service: "PhishGuard Threat Intelligence API Gateway",
+    documentation: "https://github.com/NidhiPatil22/Phishing-URL-Detector",
+  });
+});
+
 app.use("/api", router);
 
 export default app;
