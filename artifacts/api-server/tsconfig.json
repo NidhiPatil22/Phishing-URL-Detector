@@ -5,20 +5,7 @@
     "tsBuildInfoFile": ".tsbuildinfo",
     "outDir": "dist",
     "rootDir": "src",
-    "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "@workspace/api-zod": ["../../lib/api-zod/dist/index.d.ts"],
-      "@workspace/db": ["../../lib/db/dist/index.d.ts"]
-    }
+    "types": ["node"]
   },
-  "include": ["src"],
-  "references": [
-    {
-      "path": "../../lib/db"
-    },
-    {
-      "path": "../../lib/api-zod"
-    }
-  ]
+  "include": ["src"]
 }
