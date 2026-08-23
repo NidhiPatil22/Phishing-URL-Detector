@@ -8,8 +8,8 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@workspace/api-zod": ["../../lib/api-zod/src/index.ts"],
-      "@workspace/db": ["../../lib/db/src/index.ts"]
+      "@workspace/api-zod": ["../../lib/api-zod/dist/index.d.ts"],
+      "@workspace/db": ["../../lib/db/dist/index.d.ts"]
     }
   },
   "include": ["src"],
