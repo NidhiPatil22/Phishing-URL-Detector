@@ -95,10 +95,19 @@
   button, a, input, select { -webkit-tap-highlight-color: transparent; }
 }
 
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 @keyframes scanline { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 @keyframes pulse-ring { 0%, 100% { opacity: .42; transform: scale(.96); } 50% { opacity: .1; transform: scale(1.03); } }
-.animate-rise { animation: rise .55s cubic-bezier(.2,.8,.2,1) both; }
+.animate-rise { animation: float-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .stagger-1 { animation-delay: .06s; } .stagger-2 { animation-delay: .12s; } .stagger-3 { animation-delay: .18s; } .stagger-4 { animation-delay: .24s; }
 .scan-beam { position: relative; overflow: hidden; }
 .scan-beam::after { content: ''; position: absolute; inset: 0 auto 0 -50%; width: 45%; background: linear-gradient(90deg, transparent, rgba(72, 199, 177, .18), transparent); animation: scanline 1.15s ease-in-out infinite; }

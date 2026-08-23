@@ -95,7 +95,7 @@ function Button({ children, variant = 'primary', className = '', type = 'button'
 }
 
 function Card({ children, className = '', testId }: { children: ReactNode; className?: string; testId?: string }) {
-  return <div data-testid={testId} className={`border border-[hsl(var(--border))] bg-[hsl(var(--card))] ${className}`}>{children}</div>;
+  return <div data-testid={testId} className={`border border-[hsl(var(--border))] bg-[hsl(var(--card))] rounded-sm transition-all duration-300 hover:border-cyan-500/35 hover:shadow-[0_0_22px_rgba(0,240,255,0.06)] hover:bg-cyan-950/15 ${className}`}>{children}</div>;
 }
 
 function StatusPill({ verdict }: { verdict?: string }) {
