@@ -107,6 +107,10 @@ export interface Scan {
   similarityScore: number;
   impersonationReason?: string | null;
   urlIntelligence: UrlIntelligence;
+  ruleRiskScore?: number;
+  mlProbability?: number;
+  safeProbability?: number;
+  modelVersion?: string;
 }
 
 export interface DashboardStats {
@@ -140,6 +144,9 @@ export interface ModelInfo {
   trainedAt: string;
   featureImportance: FeatureImportance[];
   features: FeatureDefinition[];
+  rocAuc?: number;
+  roc_auc?: number;
+  modelVersion?: string;
 }
 
 export type ListScansParams = {

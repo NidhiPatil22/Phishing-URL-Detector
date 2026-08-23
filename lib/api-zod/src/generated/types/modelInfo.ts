@@ -19,4 +19,7 @@ export interface ModelInfo {
   trainedAt: string;
   featureImportance: FeatureImportance[];
   features: FeatureDefinition[];
+  rocAuc?: number;
+  roc_auc?: number;
+  modelVersion?: string;
 }

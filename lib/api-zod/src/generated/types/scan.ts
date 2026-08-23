@@ -29,4 +29,8 @@ export interface Scan {
   similarityScore: number;
   impersonationReason?: string | null;
   urlIntelligence: UrlIntelligence;
+  ruleRiskScore?: number;
+  mlProbability?: number;
+  safeProbability?: number;
+  modelVersion?: string;
 }
