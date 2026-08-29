@@ -10,6 +10,12 @@ The system extracts URL characteristics, evaluates them through both ML and secu
 Live on this website! 
 https://phishguard-frontend-05gg.onrender.com/
 
+<img width="959" height="466" alt="image" src="https://github.com/user-attachments/assets/8b1ca161-0408-450a-8ec0-dd12adc64820" />
+<img width="945" height="467" alt="image" src="https://github.com/user-attachments/assets/9fa2ee38-aa95-45bf-b0f2-91b835e8561b" />
+<img width="757" height="438" alt="image" src="https://github.com/user-attachments/assets/2d97561d-4507-44ee-b7b0-2034fae05abb" />
+<img width="755" height="384" alt="image" src="https://github.com/user-attachments/assets/aea0bc55-ff71-4c1f-8446-b12f09481ae2" />
+
+
 ## 🚀 Key Features
 
 * 🤖 **Random Forest Classifier:** Evaluates URLs against **20 structural and lexical features**, calibrated using `CalibratedClassifierCV` (Platt's scaling) to yield true statistical probabilities.
