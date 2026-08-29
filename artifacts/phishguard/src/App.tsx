@@ -1137,10 +1137,10 @@ function FeaturesPage() {
         <Card className="p-5 flex flex-col justify-between bg-card">
           <div>
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">URL Parameters</p>
-            <h4 className="mt-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">{data.urlIntelligence?.urlLength ?? data.url.length} Characters</h4>
+            <h4 className="mt-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">{data.urlIntelligence?.urlLength ?? data.url?.length ?? 0} Characters</h4>
           </div>
           <div className="mt-4 text-[10px] text-muted-foreground space-y-1 font-mono">
-            <div>path_depth: {data.urlIntelligence?.path.split("/").filter(Boolean).length ?? 0}</div>
+            <div>path_depth: {data.urlIntelligence?.path?.split("/").filter(Boolean).length ?? 0}</div>
             <div>query_params: {data.urlIntelligence?.queryParameterCount ?? 0}</div>
           </div>
         </Card>
